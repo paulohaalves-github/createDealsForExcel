@@ -1,6 +1,10 @@
-    const token = 'm25rb4l6cu9at1vs'
+    const token = 'TOKEN-BITRIX-WEBHOOK'
     const webhookBase = `https://grupomultifix.bitrix24.com.br/rest/348273/${token}`;
     let dadosPlanilha = [];
+    const campoBitrixCidade = 'UF_CRM_1744731228';
+    const campoOrigemNegocioBitrix = 'UF_CRM_1718630546';
+    const campoCNPJEmpresaBitrix = 'UF_CRM_1681934078490';
+    const campoRegiaoBitrix = 'UF_CRM_1677182093663'; 
 
     document.getElementById('excelFile').addEventListener('change', e => {
       const reader = new FileReader();
@@ -62,6 +66,8 @@
       const empresa = cliente['Corporate Name']?.trim();
       const cnpj = String(cliente['Corporate Document'] || '').replace(/\D/g, '');
       const valor = cliente['SKU Total Price'] || 0;
+      const cidade = cliente['City'] || '';
+      const regiao = cliente['Região'] || '';
 
       try {
         if (tipo === 'fisica') {
@@ -146,10 +152,14 @@
               OPPORTUNITY: valor,
               CONTACT_ID: tipo === 'fisica' ? entityId : undefined,
               COMPANY_ID: tipo === 'juridica' ? entityId : undefined,
-              TYPE_ID: 'GOODS'
+              TYPE_ID: 'GOODS',
+              UF_CRM_1718630546: 'Planilha enviada pela Samsung',
+              UF_CRM_1744731228 : cidade, 
+              UF_CRM_1677182093663 : regiao
             }
           })
         });
+        
 
         const negocioCriado = await criarNegocio.json();
         alert(`Negócio criado com sucesso para ${cliente['Client Name']}. ID: ${negocioCriado.result}`);
